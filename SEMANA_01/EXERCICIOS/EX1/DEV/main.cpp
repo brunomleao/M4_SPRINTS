@@ -1,6 +1,7 @@
 // TESTE!
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 // 1 -  Faça uma função que recebe uma certa medida e ajusta ela percentualmente
@@ -31,7 +32,7 @@ void ajuste()
 }
 // 2 - Faça uma função que simule a leitura de um sensor lendo o
 // valor do teclado ao final a função retorna este valor
-void scanner()
+int scanner()
 {
     int contador = 1;
     char valor = 0;
@@ -39,6 +40,7 @@ void scanner()
     cout << "Pressione em algum botão do teclado numérico para o sensor ler e o programa retornar esse valor;\n";
     cin >> valor;
     cout << "Valor lido pelo sensor: " << valor << "\n";
+    return valor;
 }
 // 3 - Faça uma função que armazena uma medida inteira qualquer
 // em um vetor fornecido. Note que como C não possui vetores
@@ -46,13 +48,10 @@ void scanner()
 // valor máximo do vetor assim como a última posição preenchida
 // Evite também que, por acidente, um valor seja escrito em
 // uma área de memória fora do vetor
-void vetor()
+vector<int> vetor;
+void adicionarvetor(int valor)
 {
-    int i = 0;
-    cout << "Insira a medida inteira a ser armazenada em um vetor: ";
-    cin >> i;
-    int vetor[] = {i};
-    cout << vetor[0];
+    vetor.push_back(valor);
 }
 
 // 4 - Faça uma função que recebe um vetor com 4 posições que contém
@@ -60,27 +59,34 @@ void vetor()
 // A função deve retornar duas informações: A primeira é a direção
 // de maior distância ("Direita", "Esquerda", "Frente", "Tras") e a
 // segunda é esta maior distância.
+string posicao[4] = {"direita", "esquerda", "frente", "tras"};
+int max_index = 0;
 void posicoes()
 {
-    string posicao[4] = {"direita", "esquerda", "frente", "tras"};
+    
     int distancia[4];
-    int max_index = 0;
+    
+    int valor;
     for (int i = 0; i < 4; i++)
     {
         cout << "Insira a distancia do robo para seu lado da " << posicao[i] << "\n";
-        cin >> distancia[i];
+        cin >> valor;
+        adicionarvetor(valor);
+        //cin >> distancia[i];
     }
-    int max = distancia[0];
+    //int max = distancia[0];
+    int max = vetor[0];
     for (int i = 0; i < 4; i++)
     {
-        if (distancia[i] > max)
+        if (vetor[i] > max)
         {
-            max = distancia[i];
+            //max = distancia[i];
+            max = vetor[i];
             max_index = i;
         }
     }
-    cout << "A direção de maior distância corresponde a: " << posicao[max_index] << " e ela corresponde a: " << distancia[max_index] << "\n";
-
+    //cout << "A direção de maior distância corresponde a: " << posicao[max_index] << " e ela corresponde a: " << vetor[max_index] << "\n";
+}
     // 5 - Faça uma função que pergunta ao usuário se ele deseja continuar o mapeamento e
     // retorna verdadeiro ou falso
     int continuar()
@@ -88,75 +94,88 @@ void posicoes()
         char valor;
         cout << "Deseja continuar o mapeamento? Digite S para sim e N para não.\n";
         cin >> valor;
-        if (valor == 'S')
+        valor = tolower(valor);
+        if (valor == 's')
         {
             cout << "Se deseja continuar!\n";
             return 1;
         }
-        else
+        if (valor=='n')
         {
             cout << "Se deseja encerrar!\n";
             return 0;
         }
-    }
-
-    // 6 - A função abaixo (que está incompleta) vai "dirigindo" virtualmente um robô
-    // e através de 4 sensores em cada um dos 4 pontos do robo ("Direita", "Esquerda",
-    // "Frente", "Tras").
-    //      A cada passo, ele verifica as distâncias aos objetos e vai mapeando o terreno
-    // para uma movimentação futura.
-    //      Ele vai armazenando estas distancias em um vetor fornecido como parâmetro
-    // e retorna a ultima posicao preenchida do vetor.
-    //      Esta função deve ir lendo os 4 sensores até que um comando de pare seja enviado
-    //
-    //      Para simular os sensores e os comandos de pare, use as funções já construídas
-    // nos ítens anteriores e em um looping contínuo até que um pedido de parada seja
-    // enviado pelo usuário.
-    //
-    //      Complete a função com a chamada das funções já criadas
-    int dirige(int *v, int maxv)
-    {
-        int maxVetor = maxv;
-        int *vetorMov = v;
-        int posAtualVetor = 0;
-        int dirigindo = 1;
-        while (dirigindo)
+        else
         {
-            int medida = /// .. Chame a função de de leitura da medida para a "Direita"
-                medida = converteSensor(medida, 0, 830);
-            posAtualVetor = // Chame a função para armazenar a medida no vetor
-                            ///////////////////////////////////////////////////////////////////////////
-                // Repita as chamadas acima para a "Esquerda", "Frente", "Tras"
-                // ................
-                ///////////////////////////////////////////////////////////////////////////
-                dirigindo = leComando();
-        }
-        return posAtualVetor;
-    }
-
-    // O trecho abaixo irá utilizar as funções acima para ler os sensores e o movimento
-    // do robô e no final percorrer o vetor e mostrar o movimento a cada direção baseado
-    // na maior distância a cada movimento
-    void percorre(int *v, int tamPercorrido)
-    {
-        int *vetorMov = v;
-        int maiorDir = 0;
-
-        for (int i = 0; i < tamPercorrido; i += 4)
-        {
-            char *direcao = direcaoMenorCaminho(&(vetorMov[i]), &maiorDir);
-            printf("Movimentando para %s distancia = %i\n", direcao, maiorDir);
+            cout << "Valor inválido!\n";
+            return 0;
         }
     }
 
-    int main(int argc, char **argv)
+    void andar(){
+        int max = vetor[0];
+        for (int i = 0; i < 4; i++)
+        {
+            if (vetor[i] > max)
+            {
+                max = vetor[i];
+                max_index = i;
+            }
+        }
+        int distancia = 0;
+        if (posicao[max_index] == "direita"){
+            cout<<"Insira a distancia a ser percorrida pelo robo: ";
+            cin>>distancia;
+            vetor[max_index]-=distancia;
+            vetor[1]+=distancia;
+        }
+        if (posicao[max_index] == "esquerda"){
+            cout<<"Insira a distancia a ser percorrida pelo robo: ";
+            cin>>distancia;
+            vetor[max_index]-=distancia;
+            vetor[0]+=distancia;
+        }
+        if (posicao[max_index] == "frente"){
+            cout<<"Insira a distancia a ser percorrida pelo robo: ";
+            cin>>distancia;
+            vetor[max_index]-=distancia;
+            vetor[3]+=distancia;
+        }
+        if (posicao[max_index] == "tras"){
+            cout<<"Insira a distancia a ser percorrida pelo robo: ";
+            cin>>distancia;
+            vetor[max_index]-=distancia;
+            vetor[2]+=distancia;
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            if (vetor[i] <= 0)
+            {
+                cout<<"O robo está na parede!\n";
+                exit(0);
+            }
+        }
+            
+    }
+
+
+void printposicoes(){
+    cout<<"Posicao atual do robo: \n";
+    for (int i = 0; i < 4; i++)
     {
-        int maxVetor = 100;
-        int vetorMov[maxVetor * 4];
-        int posAtualVet = 0;
-
-        posAtualVet = dirige(vetorMov, maxVetor);
-        percorre(vetorMov, posAtualVet);
-
-        return 0;
+        cout<<posicao[i]<<": "<<vetor[i]<<"\n";
+    }
+}
+    int main()
+    {
+        posicoes();
+        printposicoes();
+        andar();
+        printposicoes();
+        while(continuar()==1){
+            andar();
+            printposicoes();
+        }
+        cout << "Encerrando o mapeamento!\n";
+        
     }
